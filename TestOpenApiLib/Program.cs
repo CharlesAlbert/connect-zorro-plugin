@@ -17,9 +17,9 @@ namespace TestOpenApiLib
         {
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
-            ConnectAPI connectAPI = new ConnectAPI();
-            String token = connectAPI.GetToken();
-            Console.WriteLine("token= " + token);
+            //String token;
+            //ConnectAPI.GetToken(out token);
+            //Console.WriteLine("token= " + token);
         }
     }
 }

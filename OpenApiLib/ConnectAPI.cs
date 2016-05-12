@@ -1,31 +1,30 @@
 ﻿using System;
-using System.Linq;
-using OAuth2;
 using OAuth2.Client;
 using OAuth2.Infrastructure;
 using OAuth2.Configuration;
 using System.Windows.Forms;
 using System.Collections.Specialized;
-using OAuth2.Models;
+using System.Runtime.InteropServices;
+using RGiesecke.DllExport;
 
 namespace OpenApiLib
 {
     public class ConnectAPI
     {
-        OAuth2Client oAuthClient;
-        IClientConfiguration oAurhConfiguration;
+        private static IClientConfiguration oAurhConfiguration = new SpotwareClientConfiguration();
+        private static OAuth2Client oAuthClient = new SpotwareConnectClient(new RequestFactory(), oAurhConfiguration);
 
-        public ConnectAPI()
-        {
-            oAurhConfiguration = new SpotwareClientConfiguration();
-            oAuthClient = new SpotwareConnectClient(new RequestFactory(), oAurhConfiguration);
-        }
-
-        public String GetToken()
+        [DllExport(ExportName = "GetToken", CallingConvention = CallingConvention.Cdecl)]
+        [return: MarshalAs(UnmanagedType.BStr)]
+        public static String GetToken()
         {
             AuthForm authForm = new AuthForm(oAuthClient.GetLoginLinkUri(), oAurhConfiguration.RedirectUri);
             NameValueCollection query = authForm.ShowDialog() == DialogResult.OK ? authForm.Query : null;
-            return query == null ? null : oAuthClient.GetToken(query);
+            if (query != null)
+            {
+                return oAuthClient.GetToken(query);
+            }
+            return null;
         }
     }
 

@@ -14,12 +14,16 @@ BOOL APIENTRY DllMain(
 ////////////////////////////////////////////////////////////////
 typedef double DATE;
 #include "include/trading.h"  // enter your path to trading.h (in your Zorro folder)
+//#include "WTypes.h"
+
+#include "OpenApiLib.h"
 
 #define PLUGIN_VERSION	2
 #define DLLFUNC extern "C" __declspec(dllexport)
 #define CONNECTED false
 
 ////////////////////////////////////////////////////////////////
+//using namespace OpenApiLib;
 
 int(__cdecl *BrokerError)(const char *txt) = NULL;
 int(__cdecl *BrokerProgress)(const int percent) = NULL;
@@ -37,6 +41,7 @@ DLLFUNC int BrokerOpen(char* Name, FARPROC fpError, FARPROC fpProgress)
 // 0 = test, 1 = relogin, 2 = login, -1 = logout
 DLLFUNC int BrokerLogin(char* User, char* Pwd, char* Type, char* Account)
 {
+	OpenApiLib::GetToken();
 	return 0;
 }
 
