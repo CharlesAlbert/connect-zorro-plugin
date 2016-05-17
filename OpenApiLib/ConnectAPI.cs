@@ -32,9 +32,9 @@ namespace OpenApiLib
         /// Retrieves the name of the broker, and sets up two callback functions. Should not allocate or load any resources -
         /// this should be done in the BrokerLogin function. 
         /// </summary>
-        /// <param name="name"></param>
-        /// <param name="fpError"></param>
-        /// <param name="fpProgress"></param>
+        /// <param name="name">Output, char[32] array to be filled with the name of the broker</param>
+        /// <param name="fpError">Input, pointer to a int BrokerError(char* message) function, to be called for printing broker messages (usually error messages) in Zorro's message window</param>
+        /// <param name="fpProgress">Input, pointer to a int BrokerProgress(int progress=0) function, to be called repeatedly when broker operations take longer than a second</param>
         /// <returns></returns>
         [DllExport("BrokerOpen", CallingConvention = CallingConvention.Cdecl)]
         public static int BrokerOpen(StringBuilder name, BrokerErrorDelegate fpError, BrokerProgressDelegate fpProgress)
@@ -51,13 +51,13 @@ namespace OpenApiLib
         /// Zorro calls this function repeatedly in regular intervals until it is logged in again.
         /// Make sure that the function internally detects the login state and returns safely when the user was still logged in. 
         /// </summary>
-        /// <param name="user">User field value</param>
-        /// <param name="pwd">Password field value</param>
-        /// <param name="type">Type field value (Demo/Real)</param>
-        /// <param name="account"></param>
+        /// <param name="user">Input, User name for logging in, or NULL for logging out</param>
+        /// <param name="pwd">Input, Password for logging in</param>
+        /// <param name="type">Input, account type for logging in; either "Real" or "Demo"</param>
+        /// <param name="account">Optional output, char[1024] array to be filled with all user's account numbers as subsequent zero-terminated strings, ending with "" for the last string. Only the first account number is used by Zorro.</param>
         /// <returns>0 = test, 1 = relogin, 2 = login, -1 = logout</returns>
         [DllExport("BrokerLogin", CallingConvention = CallingConvention.Cdecl)]
-        public static int BrokerLogin(string user, string pwd, string type, string account)
+        public static int BrokerLogin(string user, string pwd, string type, StringBuilder accounts)
         {
             oAurhConfiguration = new SpotwareConnectConfiguration();
             oAuthClient = new SpotwareConnectClient(oAurhConfiguration);
