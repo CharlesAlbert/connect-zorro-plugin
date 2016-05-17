@@ -1,8 +1,6 @@
 ﻿using OpenApiLib;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+using System.Text;
 using System.Windows.Forms;
 
 namespace TestOpenApiLib
@@ -17,9 +15,20 @@ namespace TestOpenApiLib
         {
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
-            //String token;
-            //ConnectAPI.GetToken(out token);
-            //Console.WriteLine("token= " + token);
+            StringBuilder nameBuilder = new StringBuilder();
+            ConnectAPI.BrokerOpen(nameBuilder, BrokerError, BrokerPercent);
+            ConnectAPI.BrokerLogin(null, null, null, null);
+        }
+
+        private static int BrokerError(string txt)
+        {
+            Console.WriteLine(txt);
+            return 0;
+        }
+
+        private static int BrokerPercent(int percent)
+        {
+            return 0;
         }
     }
 }
