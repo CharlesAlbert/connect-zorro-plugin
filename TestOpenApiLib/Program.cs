@@ -17,7 +17,7 @@ namespace TestOpenApiLib
             Application.SetCompatibleTextRenderingDefault(false);
             StringBuilder nameBuilder = new StringBuilder();
             ConnectAPI.BrokerOpen(nameBuilder, BrokerError, BrokerPercent);
-            ConnectAPI.BrokerLogin(null, null, null, null);
+            ConnectAPI.BrokerLogin(null, null, null, new StringBuilder());
         }
 
         private static int BrokerError(string txt)

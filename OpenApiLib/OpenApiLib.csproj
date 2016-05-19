@@ -79,6 +79,13 @@
       <DependentUpon>AuthForm.cs</DependentUpon>
     </Compile>
     <Compile Include="ConnectAPI.cs" />
+    <Compile Include="Json\AccountsAPI.cs" />
+    <Compile Include="Json\AccountsAPIException.cs" />
+    <Compile Include="Json\Models\AbstractJson.cs" />
+    <Compile Include="Json\Models\Enums\TradeSideType.cs" />
+    <Compile Include="Json\Models\ErrorJson.cs" />
+    <Compile Include="Json\Models\MessageJson.cs" />
+    <Compile Include="Json\Models\TradingAccountJson.cs" />
     <Compile Include="OAuth2\Configuration\IClientConfiguration.cs" />
     <Compile Include="OAuth2\Client\IClient.cs" />
     <Compile Include="OAuth2\Configuration\SpotwareConnectConfiguration.cs" />

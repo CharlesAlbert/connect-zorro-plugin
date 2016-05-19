@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using OAuth2.Configuration;
 using System.Runtime.InteropServices;
 using RGiesecke.DllExport;
@@ -6,12 +7,15 @@ using System.Text;
 using System.Collections.Specialized;
 using System.Windows.Forms;
 using OAuth2.Client;
+using OpenApiLibrary.Json;
+using OpenApiLib.Json.Models;
 
 namespace OpenApiLib
 {
     public class ConnectAPI
     {
         private const int PLUGIN_VERSION = 2;
+        private const string ACCOUNTS_API_HOST_URL = "https://sandbox-api.spotware.com";
 
         public delegate int BrokerErrorDelegate(string txt);
         public delegate int BrokerProgressDelegate(int percent);
@@ -23,6 +27,9 @@ namespace OpenApiLib
         private static IClient oAuthClient;
 
         private static bool connected;
+        private static string accessToken;
+        private static AccountsAPI accountsAPI;
+        private static TradingAccountJson[] tradingAccounts;
 
         [DllExport("DLLMain", CallingConvention = CallingConvention.StdCall)]
         public static void DLLMain(IntPtr hModule, UInt32 ul_reason_for_call, IntPtr lpReserved)
@@ -65,9 +72,21 @@ namespace OpenApiLib
         {
             oAurhConfiguration = new SpotwareConnectConfiguration();
             oAuthClient = new SpotwareConnectClient(oAurhConfiguration);
-            String token = GetToken();
-            BrokerError(token);
-            // TODO implementation
+            accessToken = GetToken();
+            if (accessToken != null)
+            {
+                accountsAPI = new AccountsAPI(ACCOUNTS_API_HOST_URL, accessToken);
+                tradingAccounts = accountsAPI.getTradingAccounts();
+                foreach (TradingAccountJson account in tradingAccounts)
+                {
+                    if (accounts.Length > 0)
+                    {
+                        accounts.Append('\0');
+                    }
+                    accounts.Append(account.AccountId);
+                }
+                return 1;
+            }
             return 0;
         }
 
@@ -98,6 +117,7 @@ namespace OpenApiLib
         public static int BrokerTime(double[] pTimeGMT)
         {
             // TODO implementation
+            BrokerError("BrokerTime");
             if (!connected) return 0;
             return 0;
         }
@@ -135,6 +155,7 @@ namespace OpenApiLib
             double[] pMargin, double[] pRollLong, double[] pRollShort)
         {
             // TODO implementation
+            BrokerError("BrokerAsset");
             if (!connected) return 0;
             return 0;
         }
@@ -165,6 +186,7 @@ namespace OpenApiLib
         public static int BrokerHistory(string asset, double tStart, double tEnd, int nTickMinutes, int nTicks, TICK[] ticks)
         {
             // TODO implementation
+            BrokerError("BrokerHistory");
             if (!connected || String.IsNullOrEmpty(asset) || ticks == null || nTicks == 0) return 0;
             return 0;
         }
@@ -185,7 +207,14 @@ namespace OpenApiLib
         public static int BrokerAccount(string account, double[] pdBalance, double[] pdTradeVal, double[] pdMarginVal)
         {
             // TODO implementation
+            BrokerError("BrokerAccount");
             if (!connected) return 0;
+            TradingAccountJson tradingAccount = Array.Find(tradingAccounts, a => a.AccountId.ToString().Equals(account));
+            if (tradingAccount != null)
+            {
+                pdBalance[0] = tradingAccount.Balance / 100.00;
+                return 1;
+            }
             return 0;
         }
 
@@ -210,6 +239,7 @@ namespace OpenApiLib
         public static int BrokerBuy(string asset, int nAmount, double dStopDist, double[] pPrice)
         {
             // TODO implementation
+            BrokerError("BrokerBuy");
             if (!connected) return 0;
             return 0;
         }
@@ -229,6 +259,7 @@ namespace OpenApiLib
         public static int BrokerTrade(int nTradeID, double[] pOpen, double[] pClose, double[] pRoll, double[] pProfit)
         {
             // TODO implementation
+            BrokerError("BrokerTrade");
             if (!connected) return 0;
             return 0;
         }
@@ -245,6 +276,7 @@ namespace OpenApiLib
         public static int BrokerStop(int nTradeID, double dStop)
         {
             // TODO implementation
+            BrokerError("BrokerStop");
             if (!connected) return 0;
             return 0;
         }
@@ -262,6 +294,7 @@ namespace OpenApiLib
         public static int BrokerSell(int nTradeID, int nAmount)
         {
             // TODO implementation
+            BrokerError("BrokerSell");
             if (!connected) return 0;
             return 0;
         }
@@ -278,6 +311,7 @@ namespace OpenApiLib
         public static dynamic BrokerCommand(int nCommand, UInt32 dwParameter)
         {
             // TODO implementation
+            BrokerError("BrokerCommand");
             if (!connected) return 0;
             return 0;
         }
