@@ -5,6 +5,7 @@ using OAuth2.Models;
 using System.Net;
 using System.IO;
 using System.Runtime.Serialization.Json;
+using System.Web;
 
 namespace OAuth2.Client
 {
@@ -68,10 +69,10 @@ namespace OAuth2.Client
         public string GetLoginLinkUri(string state = null)
         {
             return String.Format("{0}?client_id={1}&response_type=code&redirect_uri={2}&scope={3}&state={4}",
-                configuration.AuthUri,
-                configuration.ClientId,
-                configuration.RedirectUri,
-                configuration.Scope,
+                HttpUtility.HtmlEncode(configuration.AuthUri),
+                HttpUtility.HtmlEncode(configuration.ClientId),
+                HttpUtility.HtmlEncode(configuration.RedirectUri),
+                HttpUtility.HtmlEncode(configuration.Scope),
                 state
                 );
         }
@@ -140,10 +141,10 @@ namespace OAuth2.Client
         {
             var code = parameters.Get("code");
             return string.Format("code={0}&client_id={1}&client_secret={2}&redirect_uri={3}&grant_type={4}",
-                code,
-                configuration.ClientId,
-                configuration.ClientSecret,
-                configuration.RedirectUri,
+                HttpUtility.HtmlEncode(code),
+                HttpUtility.HtmlEncode(configuration.ClientId),
+                HttpUtility.HtmlEncode(configuration.ClientSecret),
+                HttpUtility.HtmlEncode(configuration.RedirectUri),
                 GrantType);
         }
 
