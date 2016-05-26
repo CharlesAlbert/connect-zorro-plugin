@@ -1,4 +1,4 @@
-namespace namespace OpenApiLib.Json.Models
+namespace OpenApiLib.Json.Models
 {
 	public class TickDataJson : AbstractJson
 	{

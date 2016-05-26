@@ -1,6 +1,6 @@
 namespace OpenApiLib.Json.Models
 {
-	public class PositionCloseDetailsJson : AbstractJson
+    public class PositionCloseDetailsJson : AbstractJson
 	{
 		public double EntryPrice { get; set; }
 		public long Profit { get; set; }

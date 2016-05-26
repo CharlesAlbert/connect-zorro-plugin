@@ -1,3 +1,5 @@
+using Newtonsoft.Json;
+
 namespace OpenApiLib.Json.Models
 {
 	public class SymbolJson : AbstractJson

@@ -6,6 +6,7 @@ using System;
 using System.Net;
 using System.IO;
 using System.Runtime.Serialization.Json;
+using Newtonsoft.Json;
 
 namespace OpenApiLibrary.Json
 {
@@ -78,35 +79,40 @@ namespace OpenApiLibrary.Json
 			return url;
 		}
 
-		private Stream callURL(string myURL)
+		private string callURL(string myURL)
 		{
 			Console.WriteLine("Requsted URL:" + myURL);
 			HttpWebRequest http = (HttpWebRequest)WebRequest.Create(myURL);
 			WebResponse response = http.GetResponse();
-			return response.GetResponseStream();
-		}
+            Stream stream = response.GetResponseStream();
+            string content = null;
+            using (StreamReader sr = new StreamReader(stream))
+            {
+                content = sr.ReadToEnd();
+            }
+            return content;
+        }
 
-		public TradingAccountJson[] getTradingAccounts()
+        public TradingAccountJson[] getTradingAccounts()
 		{
 			string service = getServiceURLString(TRADING_ACCOUNTS_SERVICE);
 			try
 			{
-                DataContractJsonSerializer serializer = new DataContractJsonSerializer(typeof(MessageJson<TradingAccountJson[]>));
-                MessageJson<TradingAccountJson[]> messageJson = serializer.ReadObject(callURL(service)) as MessageJson<TradingAccountJson[]>;
-				ErrorJson error = messageJson.Error;
-				if (error != null)
-				{
-					throw new AccountsAPIException(error.ErrorCode, error.Description);
-				}
-				return messageJson.Data;
-			}
-			catch (System.Exception e)
+                MessageJson<TradingAccountJson[]> messageJson = JsonConvert.DeserializeObject<MessageJson<TradingAccountJson[]>>(callURL(service));
+                ErrorJson error = messageJson.Error;
+                if (error != null)
+                {
+                    throw new AccountsAPIException(error.ErrorCode, error.Description);
+                }
+                return messageJson.Data;
+            }
+            catch (System.Exception e)
 			{
 				throw new AccountsAPIException(e);
 			}
 		}
-        /*
-		public SymbolJson[] getSymbols(long accountId)
+
+        public SymbolJson[] getSymbols(long accountId)
 		{
 			IDictionary<string, string> pathParams = new Dictionary <string, string>();
 			pathParams["id"] = accountId.ToString();
@@ -127,6 +133,7 @@ namespace OpenApiLibrary.Json
 			}
 		}
 
+        /*
 		public TrendbarJson[] getMinuteTredbars(long accountId, string symbolName, DateTime from, DateTime to)
 		{
 			IDictionary<string, string> pathParams = new Dictionary <string, string>();

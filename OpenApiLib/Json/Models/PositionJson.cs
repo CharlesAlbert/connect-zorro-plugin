@@ -1,6 +1,6 @@
 namespace OpenApiLib.Json.Models
 {
-	public class PositionJson : AbstractJson
+    public class PositionJson : AbstractJson
 	{
 		public long PositionId { get; set; }
 		public long EntryTimestamp { get; set; }

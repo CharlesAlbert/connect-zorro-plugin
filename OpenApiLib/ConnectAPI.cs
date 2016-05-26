@@ -9,6 +9,8 @@ using System.Windows.Forms;
 using OAuth2.Client;
 using OpenApiLibrary.Json;
 using OpenApiLib.Json.Models;
+using System.Reflection;
+using System.IO;
 
 namespace OpenApiLib
 {
@@ -30,6 +32,22 @@ namespace OpenApiLib
         private static string accessToken;
         private static AccountsAPI accountsAPI;
         private static TradingAccountJson[] tradingAccounts;
+        private static SymbolJson[] symbols;
+
+        static ConnectAPI()
+        {
+            AppDomain currentDomain = AppDomain.CurrentDomain;
+            currentDomain.AssemblyResolve += new ResolveEventHandler(LoadFromSameFolder);
+        }
+
+        static Assembly LoadFromSameFolder(object sender, ResolveEventArgs args)
+        {
+            string folderPath = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
+            string assemblyPath = Path.Combine(folderPath, new AssemblyName(args.Name).Name + ".dll");
+            if (File.Exists(assemblyPath) == false) return null;
+            Assembly assembly = Assembly.LoadFrom(assemblyPath);
+            return assembly;
+        }
 
         [DllExport("DLLMain", CallingConvention = CallingConvention.StdCall)]
         public static void DLLMain(IntPtr hModule, UInt32 ul_reason_for_call, IntPtr lpReserved)
@@ -73,7 +91,8 @@ namespace OpenApiLib
             oAurhConfiguration = new SpotwareConnectConfiguration();
             oAuthClient = new SpotwareConnectClient(oAurhConfiguration);
             accessToken = GetToken();
-            if (accessToken != null)
+            connected = accessToken != null;
+            if (connected)
             {
                 accountsAPI = new AccountsAPI(ACCOUNTS_API_HOST_URL, accessToken);
                 tradingAccounts = accountsAPI.getTradingAccounts();
@@ -157,6 +176,18 @@ namespace OpenApiLib
             // TODO implementation
             BrokerError("BrokerAsset");
             if (!connected) return 0;
+            asset = asset.Replace("/", "");
+            SymbolJson symbol = Array.Find(symbols, s => s.SymbolName.Equals(asset));
+            if (symbol != null)
+            {
+                BrokerError(symbol.ToString());
+                pPrice[0] = symbol.LastAsk;
+                pSpread[0] = symbol.LastAsk - symbol.LastBid;
+                pVolume[0] = 0;
+                pPip[0] = symbol.PipPosition;
+                pMinAmount[0] = symbol.MinOrderVolume;                
+                return 1;
+            }
             return 0;
         }
 
@@ -206,13 +237,16 @@ namespace OpenApiLib
         [DllExport("BrokerAccount", CallingConvention = CallingConvention.Cdecl)]
         public static int BrokerAccount(string account, double[] pdBalance, double[] pdTradeVal, double[] pdMarginVal)
         {
-            // TODO implementation
-            BrokerError("BrokerAccount");
             if (!connected) return 0;
-            TradingAccountJson tradingAccount = Array.Find(tradingAccounts, a => a.AccountId.ToString().Equals(account));
+            TradingAccountJson tradingAccount = tradingAccounts[0];
+            if (account != null)
+            {
+                tradingAccount = Array.Find(tradingAccounts, a => a.AccountId.ToString().Equals(account));
+            }
             if (tradingAccount != null)
             {
                 pdBalance[0] = tradingAccount.Balance / 100.00;
+                symbols = accountsAPI.getSymbols(tradingAccount.AccountId);
                 return 1;
             }
             return 0;

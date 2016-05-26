@@ -1,47 +1,21 @@
-using System.Runtime.Serialization;
+using Newtonsoft.Json;
 
 namespace OpenApiLib.Json.Models
 {
-    [DataContract]
-    public class TradingAccountJson : AbstractJson
+	public class TradingAccountJson : AbstractJson
 	{
-        [DataMember(Name = "accountId")]
-        public long AccountId { get; set; }
-
-        [DataMember(Name = "accountNumber")]
-        public long AccountNumber{ get; set; }
-
-        [DataMember(Name = "live")]
-        public bool Live { get; set; }
-
-        [DataMember(Name = "brokerName")]
-        public string brokerName { get; set; }
-
-        [DataMember(Name = "brokerTitle")]
-        public string BrokerTitle { get; set; }
-
-        [DataMember(Name = "brokerCode")]
-        public long? BrokerCode { get; set; }
-
-        [DataMember(Name = "depositCurrency")]
-        public string DepositCurrency { get; set; }
-
-        [DataMember(Name = "traderRegistrationTimestamp")]
-        public long TraderRegistrationTimestamp { get; set; }
-
-        [DataMember(Name = "traderAccountType")]
-        public string TraderAccountType { get; set; }
-
-        [DataMember(Name = "leverage")]
-        public int Leverage { get; set; }
-
-        [DataMember(Name = "balance")]
-        public long Balance { get; set; }
-
-        [DataMember(Name = "deleted")]
-        public bool Deleted { get; set; }
-
-        [DataMember(Name = "accountStatus")]
-        public string AccountStatus { get; set; }
-    }
+		public long AccountId { get; set; }
+		public long AccountNumber{ get; set; }
+		public bool Live { get; set; }
+		public string BrokerName { get; set; }
+		public string BrokerTitle { get; set; }
+		[JsonProperty(NullValueHandling=NullValueHandling.Ignore)]
+		public long BrokerCode { get; set; }
+		public string DepositCurrency { get; set; }
+		public long TraderRegistrationTimestamp { get; set; }
+		public string TraderAccountType { get; set; }
+		public int Leverage { get; set; }
+		public long Balance { get; set; }
+		public bool Deleted { get; set; }
+	}
 }

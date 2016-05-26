@@ -55,6 +55,10 @@
     <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Newtonsoft.Json, Version=8.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <HintPath>..\packages\Newtonsoft.Json.8.0.3\lib\net45\Newtonsoft.Json.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="RGiesecke.DllExport.Metadata, Version=1.0.0.0, Culture=neutral, PublicKeyToken=8f52d83c1a22df51, processorArchitecture=MSIL">
       <HintPath>..\packages\UnmanagedExports.1.2.7\lib\net\RGiesecke.DllExport.Metadata.dll</HintPath>
       <Private>False</Private>
@@ -82,10 +86,23 @@
     <Compile Include="Json\AccountsAPI.cs" />
     <Compile Include="Json\AccountsAPIException.cs" />
     <Compile Include="Json\Models\AbstractJson.cs" />
+    <Compile Include="Json\Models\CashflowJson.cs" />
+    <Compile Include="Json\Models\CreateDemoTraderAccountReqJson.cs" />
+    <Compile Include="Json\Models\CursorMessageJson.cs" />
+    <Compile Include="Json\Models\DealJson.cs" />
+    <Compile Include="Json\Models\DepositWithdrawReqJson.cs" />
+    <Compile Include="Json\Models\DepositWithdrawResJson.cs" />
     <Compile Include="Json\Models\Enums\TradeSideType.cs" />
     <Compile Include="Json\Models\ErrorJson.cs" />
     <Compile Include="Json\Models\MessageJson.cs" />
+    <Compile Include="Json\Models\PendingOrderJson.cs" />
+    <Compile Include="Json\Models\PositionCloseDetailsJson.cs" />
+    <Compile Include="Json\Models\PositionJson.cs" />
+    <Compile Include="Json\Models\ProfileJson.cs" />
+    <Compile Include="Json\Models\SymbolJson.cs" />
+    <Compile Include="Json\Models\TickDataJson.cs" />
     <Compile Include="Json\Models\TradingAccountJson.cs" />
+    <Compile Include="Json\Models\TrendbarJson.cs" />
     <Compile Include="OAuth2\Configuration\IClientConfiguration.cs" />
     <Compile Include="OAuth2\Client\IClient.cs" />
     <Compile Include="OAuth2\Configuration\SpotwareConnectConfiguration.cs" />

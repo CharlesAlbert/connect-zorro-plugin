@@ -1,6 +1,6 @@
 namespace OpenApiLib.Json.Models
 {
-	public class PendingOrderJson : AbstractJson
+    public class PendingOrderJson : AbstractJson
 	{
 		public long OrderId { get; set; }
 		public string SymbolName { get; set; }
